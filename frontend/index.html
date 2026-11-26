@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Return Autopsy | Return Management</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div><h2>Return Autopsy</h2><small>Return management</small></div>
+      </div>
+      <nav>
+        <button class="nav-link active" data-page="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-page="add"><span>＋</span> Add Return</button>
+        <button class="nav-link" data-page="history"><span>▤</span> Return History</button>
+        <button class="nav-link" data-page="autopsy"><span>⌕</span> Return Autopsy</button>
+      </nav>
+      <div class="sidebar-note">
+        <div class="note-icon">♡</div>
+        <strong>Small insights.<br>Better decisions.</strong>
+        <p>Understand why products come back.</p>
+      </div>
+      <div class="sidebar-footer">Return Autopsy · Mini Project</div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">RETURN MANAGEMENT SYSTEM</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="today-label" id="today-label"></span>
+          <div class="avatar">RA</div>
+        </div>
+      </header>
+
+      <section class="page active" id="dashboard-page">
+        <div class="welcome-row">
+          <div><h2>Welcome back!</h2><p>Here is what's happening with your returns.</p></div>
+          <button class="primary-btn" data-go="add">＋ Add new return</button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total Returns</span><span class="stat-icon lavender">▣</span></div><strong id="total-count">0</strong><small>All recorded returns</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Pending</span><span class="stat-icon peach">◷</span></div><strong id="pending-count">0</strong><small>Awaiting review</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Approved</span><span class="stat-icon green">✓</span></div><strong id="approved-count">0</strong><small>Approved requests</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Rejected</span><span class="stat-icon pink">×</span></div><strong id="rejected-count">0</strong><small>Rejected requests</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h3>Return reasons</h3><p>What are customers reporting?</p></div></div>
+            <div class="chart-wrap"><canvas id="reasonChart"></canvas></div>
+          </article>
+          <article class="panel insight-panel">
+            <div class="panel-heading"><div><h3>Quick insight</h3><p>A snapshot of your return data</p></div><span class="sparkle">✦</span></div>
+            <div class="insight-number" id="top-reason">—</div>
+            <p class="insight-caption">Most common return reason</p>
+            <div class="insight-divider"></div>
+            <p id="quick-suggestion">Add return records to start discovering patterns.</p>
+            <button class="text-btn" data-go="autopsy">View full autopsy →</button>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Recent returns</h3><p>Your latest return requests</p></div><button class="text-btn" data-go="history">View all →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>Product</th><th>Order ID</th><th>Reason</th><th>Date</th><th>Status</th></tr></thead><tbody id="recent-table"><tr><td colspan="5" class="empty-cell">No returns added yet.</td></tr></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="page" id="add-page">
+        <div class="section-intro"><h2>Add a return request</h2><p>Enter the product and return details below.</p></div>
+        <form id="return-form" class="panel form-panel">
+          <div class="form-grid">
+            <label>Product name *<input name="product_name" required placeholder="e.g. Wireless headphones"></label>
+            <label>Order ID *<input name="order_id" required placeholder="e.g. ORD-1024"></label>
+            <label>Customer name<input name="customer_name" placeholder="Customer name"></label>
+            <label>Return date *<input name="return_date" type="date" required></label>
+            <label>Return reason *
+              <select name="reason" required>
+                <option value="">Select a reason</option>
+                <option>Damaged product</option><option>Defective product</option>
+                <option>Wrong item delivered</option><option>Wrong size</option>
+                <option>Not as described</option><option>Poor quality</option>
+                <option>Late delivery</option><option>Changed mind</option><option>Other</option>
+              </select>
+            </label>
+            <label>Product condition *
+              <select name="condition" required>
+                <option value="">Select condition</option>
+                <option>Unused</option><option>Opened</option><option>Damaged</option><option>Defective</option><option>Used</option>
+              </select>
+            </label>
+            <label class="full-width">Additional comments<textarea name="comments" rows="4" placeholder="Add any extra details..."></textarea></label>
+          </div>
+          <div class="form-actions"><button type="reset" class="secondary-btn">Clear form</button><button class="primary-btn" type="submit">Save return</button></div>
+          <p class="form-message" id="form-message"></p>
+        </form>
+      </section>
+
+      <section class="page" id="history-page">
+        <div class="section-intro"><h2>Return history</h2><p>Search, review and update your return requests.</p></div>
+        <article class="panel">
+          <div class="toolbar">
+            <input id="search-input" class="search-input" placeholder="Search product or order ID...">
+            <select id="status-filter"><option value="">All statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option><option>Completed</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Product</th><th>Order ID</th><th>Reason</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="history-table"><tr><td colspan="6" class="empty-cell">No returns added yet.</td></tr></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="page" id="autopsy-page">
+        <div class="section-intro"><h2>Return autopsy</h2><p>Look beyond the return and find the common causes.</p></div>
+        <div class="stats-grid autopsy-stats">
+          <article class="stat-card"><div class="stat-top"><span>Most common reason</span><span class="stat-icon lavender">⌕</span></div><strong class="small-stat" id="autopsy-reason">—</strong><small>Based on recorded returns</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Damaged items</span><span class="stat-icon pink">!</span></div><strong id="damaged-count">0</strong><small>Condition marked damaged</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Defective items</span><span class="stat-icon peach">⚙</span></div><strong id="defective-count">0</strong><small>Condition marked defective</small></article>
+        </div>
+        <article class="panel ai-panel">
+          <div class="panel-heading"><div><h3>✦ AI customer feedback analysis</h3><p>Let Gemini AI understand a customer's complaint and suggest what to improve.</p></div><span class="ai-tag">AI POWERED</span></div>
+          <label class="ai-label" for="ai-feedback">Customer feedback</label>
+          <textarea id="ai-feedback" rows="4" maxlength="2000" placeholder="Example: The headphones stopped working after two days and the sound keeps breaking..."></textarea>
+          <div class="ai-actions"><button type="button" class="primary-btn" id="analyze-feedback-btn">✦ Analyse with AI</button><span id="ai-status" class="ai-status"></span></div>
+          <div id="ai-result" class="ai-result" aria-live="polite"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Findings & suggestions</h3><p>Basic recommendations generated from your recorded return reasons.</p></div></div>
+          <div id="recommendations" class="recommendations"><div class="empty-state">Add a few returns to generate findings.</div></div>
+        </article>
+      </section>
+
+      <footer class="main-footer">Made with care · Return Autopsy</footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
